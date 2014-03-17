@@ -1,11 +1,10 @@
-
 # yeash
 **Ye**t another **A**bstraction for **Sh**ell
 
 A new approach for modularization and abstractions of shell scripts, being able to reuse, extend in an easy and readable way.
 
 
-# about
+## about
 
 This project can be seen as a set of modules, set of snippets, wrapper functions, you name it. One of the main features of this project is the ```include``` command which allows to import particular functions to your scripts, or even better, rename the imported function using the ```as``` paramter. The collection of modules and functions can be easly reused, there is no need to include yeash to your project, just copy and paste!
 
