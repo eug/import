@@ -1,5 +1,5 @@
 # yeash
-**Y**et anoth**e**r **A**bstraction for **Sh**ell
+**Ye**t another **A**bstraction for **Sh**ell
 
 yeash can be seen as a set of modules, set of snippets, wrapper functions, you name it. This project aims to collect the most popular functions of shell script world, being able to reuse, extend in a easy and readable way.
 
