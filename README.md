@@ -19,14 +19,14 @@ yeash can be seen as a set of modules, set of snippets, wrapper functions, you n
 
 source include
 
-include file.isdir
-include string.to_lower
-include string.to_upper as upper
+include libs/file.isdir
+include libs/string.to_lower
+include libs/string.to_upper as upper
 
-if [ $(isdir "$1") ]; then
-    echo $(to_lower "$1")
+if [ ! $(isdir "$1") ]; then
+    echo $(to_lower "$1 YEASH!")
 else
-    echo $(upper "$1")
+    echo $(upper "$1 yeash!")
 fi
 
 ```
