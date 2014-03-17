@@ -1,0 +1,69 @@
+#!/bin/bash
+
+
+# This script is just a proof of concept that enables load particular functions
+# and modules in a clean fashion way. This script has a restriction that all
+# public functions must depend only by private functions or commands that can
+# be found at the PATH or some other environment variable.
+
+# include <module>.[function][ as <alias>]
+# $1 name of the module/function to include
+# $2 the 'as' "keyword"
+# $3 function alias
+
+function __load_pvt_functions
+{
+  sed -n "/^function __/,/^}/p" "${__mdl__}.sh" 
+}
+
+
+function __load_function
+{
+  sed -n "/^function $__fnc__$/,/^}/p" "${__mdl__}.sh"
+}
+
+
+function __isloaded
+{
+  echo "declare -F $1 > /dev/null; echo $?"
+}
+
+
+function __echoerr
+{
+  echo "$@" 1>&2;
+}
+
+
+function include
+{
+  local __arg__=(${1//./ })
+  local __mdl__="${__arg__[0]}"
+  local __fnc__="${__arg__[1]}"
+  local __als__="$3"
+
+
+  # have specified a function?
+  if [ -n "$__fnc__" ]; then
+
+    local pvt_func="$(__load_pvt_functions)"
+    local tgt_func="$(__load_function)"
+
+    # have define an alias?
+    if [ "$2" = "as" -a -n "$__als__" ]; then
+      tgt_func="${tgt_func//$__fnc__/$__als__}"
+    fi
+
+    eval "$pvt_func"
+    eval "$tgt_func"
+
+    if [ "$(__isloaded $__fnc__)" = "$(__isloaded $__als__)" ]; then
+      __echoerr "unable to load function: $__fnc__"
+    fi
+    
+  else
+    # loads the entire module
+    source "${__mdl__}.sh"
+  fi
+}
+
