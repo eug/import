@@ -2,9 +2,9 @@
 
 source yeash
 
-include libs/file.isdir
-include libs/string.to_lower
-include libs/string.to_upper as upper
+use core/file.isdir
+use core/string.to_lower
+use core/string.to_upper as upper
 
 if [ ! $(isdir "$1") ]; then
     echo $(to_lower "$1 YEASH!")
