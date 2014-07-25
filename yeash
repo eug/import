@@ -1,41 +1,47 @@
 #!/bin/bash
 
 
-# This script is just a proof of concept that enables load particular functions
-# and modules in a clean fashion way. This script has a restriction that all
-# public functions must depend only by private functions or commands that can
-# be found at the PATH or some other environment variable.
+# This script is just a proof of concept that enables to load particular
+# functions and modules in a clean fashion way. This script has a restriction
+# that all public functions must depend only by private functions or
+# commands that can be found at the PATH or some other environment variable.
 
-# include <module>.[function][ as <alias>]
-# $1 name of the module/function to include
-# $2 the 'as' "keyword"
-# $3 function alias
 
-function __load_pvt_functions
+# Loads all private functions of a given module
+# $1 module name
+__load_private_functions()
 {
-  sed -n "/^function __/,/^}/p" "${__mdl__}.sh" 
+  sed -n "/^__[A-Za-z0-9_]+()/,/^}/p" "${1}.sh" 
 }
 
 
-function __load_function
+# Loads a public function of a particular module
+# $1 module name
+# $2 function name
+__load_public_functions()
 {
-  sed -n "/^function $__fnc__$/,/^}/p" "${__mdl__}.sh"
+  sed -n "/^${2}()$/,/^}/p" "${1}.sh"
 }
 
 
-function __isloaded
+__isloaded()
 {
   echo "declare -F $1 > /dev/null; echo $?"
 }
 
 
-function __echoerr
+__err()
 {
   echo "$@" 1>&2;
+  exit;
 }
 
 
-function include
+# usage: use <module>.[function][ as <alias>]
+# $1 name of the module/function to include
+# $2 the 'as' "keyword"
+# $3 function alias
+use()
 {
   local __arg__=(${1//./ })
   local __mdl__="${__arg__[0]}"
@@ -43,11 +49,11 @@ function include
   local __als__="$3"
 
 
-  # have specified a function?
+  # have specified a function name?
   if [ -n "$__fnc__" ]; then
 
-    local pvt_func="$(__load_pvt_functions)"
-    local tgt_func="$(__load_function)"
+    local pvt_func="$(__load_private_functions $__mdl__)"
+    local tgt_func="$(__load_public_functions  $__mdl__ $__fnc__)"
 
     # have define an alias?
     if [ "$2" = "as" -a -n "$__als__" ]; then
@@ -58,7 +64,7 @@ function include
     eval "$tgt_func"
 
     if [ "$(__isloaded $__fnc__)" = "$(__isloaded $__als__)" ]; then
-      __echoerr "unable to load function: $__fnc__"
+      __err "unable to load function: $__fnc__"
     fi
     
   else
@@ -66,4 +72,3 @@ function include
     source "${__mdl__}.sh"
   fi
 }
-
