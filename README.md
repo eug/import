@@ -1,20 +1,24 @@
 # yeash
-**Ye**t another **A**bstraction for **Sh**ell
+<b>Y</b>et anoth<b>e</b>r <b>A</b>bstraction for <b>Sh</b>ell
 
-A new approach for modularization and abstractions of shell scripts, being able to reuse, extend in an easy and readable way.
-
+A module-based library providing standardized functions to help build large shell scripts.
 
 ## about
 
-This project can be seen as a set of modules, set of snippets, wrapper functions, you name it. One of the main features of this project is the ```include``` command which allows to import particular functions to your scripts, or even better, rename the imported function using the ```as``` paramter. The collection of modules and functions can be easly reused, there is no need to include yeash to your project, just copy and paste!
+This project is module-based containing a set of functions to help build large shell scripts. In the core library, each shell script is called module, the collection of modules and functions can be easily reused among projects. One of the main features of this project is the ```use``` function which allows to import particular functions to scripts, or even better, set a alias for it.
 
 
 ## basic usage
-- Use the command ```./spec <module.sh>``` to see which functions are available.
-
+- Bear in mind that ```use``` function is just a proof of concept.
+- Use the command ```./spec <module.sh>``` to list which functions are available.
 - To import a whole module you can use the old fashion ```source <module.sh>```
+- To import a particular function just ```use <module>.[function][ as <alias>]```.
 
-- Or you can import a particular function of a given module to your script just using ```include <module>.[function][ as <alias>]```, make sure to import the ```include``` module before to use it. Bear in mind that the ```include``` function is just a proof of concept.
+
+## guidelines
+- Each module _MUST_ _NOT_ have any dependency with other modules
+- Private functions _MUST_ be prefixed with ```__``` (double underscore)
+- Each public function _MUST_ depend only by private functions
 
 
 ## example
@@ -24,9 +28,9 @@ This project can be seen as a set of modules, set of snippets, wrapper functions
 
 source yeash
 
-include libs/file.isdir
-include libs/string.to_lower
-include libs/string.to_upper as upper
+use core/file.isdir
+use core/string.to_lower
+use core/string.to_upper as upper
 
 if [ ! $(isdir "$1") ]; then
     echo $(to_lower "$1 YEASH!")
@@ -35,4 +39,3 @@ else
 fi
 
 ```
-
