@@ -5,8 +5,7 @@ A import system for shell script.
 This project implements an import system for shell script, allowing to import specific functions and/or set alias for it. The current version only supports BASH, but can be easily extended for any alternative. Also, some guidelines must be followed to avoid possible conflicts during the usage.
 
 ## Basic usage
-- Use the command ```./spec <module.sh>``` to list which functions are available.
-- To use the import function just ```import <module>[.function][ as <alias>]```.
+```import <module>[.function][ as <alias>]```
 
 ## Guidelines
 - Each module _MUST_ _NOT_ have any dependency with other modules
