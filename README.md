@@ -1,36 +1,30 @@
-# yeash
-<b>Y</b>et anoth<b>e</b>r <b>A</b>bstraction for <b>Sh</b>ell
+# importish
+A import system for shell script.
 
-A module-based library providing standardized functions to help build large shell scripts.
+## About
+This project implements an import system for shell script, allowing to import specific functions and/or set alias for it. The current version only supports BASH, but can easily extended for any alternative. Also, some guidelines must be followed to avoid possible conflicts during the usage.
 
-## about
-
-This project is module-based containing a set of functions to help build large shell scripts. In the core library, each shell script is called module, the collection of modules and functions can be easily reused among projects. One of the main features of this project is the ```use``` function which allows to import particular functions to scripts, or even better, set a alias for it.
-
-
-## basic usage
-- Bear in mind that ```use``` function is just a proof of concept.
+## Basic usage
 - Use the command ```./spec <module.sh>``` to list which functions are available.
-- To import a whole module you can use the old fashion ```source <module.sh>```
-- To import a particular function just ```use <module>.[function][ as <alias>]```.
+- To use the import function just ```import <module>[.function][ as <alias>]```.
 
-
-## guidelines
+## Guidelines
 - Each module _MUST_ _NOT_ have any dependency with other modules
 - Private functions _MUST_ be prefixed with ```__``` (double underscore)
 - Each public function _MUST_ depend only by private functions
+- All modules _MUST_ contain ``.sh`` extension
 
-
-## example
+## Example
 
 ```sh
 #!/bin/bash
 
-source yeash
+source ../importish
 
-use core/file.isdir
-use core/string.to_lower
-use core/string.to_upper as upper
+import core/log                      # import entire module
+import core/file.isdir               # import specific function
+import core/string.to_lower
+import core/string.to_upper as upper # import specific function and define an alias
 
 if [ ! $(isdir "$1") ]; then
     echo $(to_lower "$1 YEASH!")
