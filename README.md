@@ -18,17 +18,16 @@ This project implements an import system for shell script, allowing to import sp
 ```sh
 #!/bin/bash
 
-source ../importish
+source ../import.sh
 
-import core/log                      # import entire module
-import core/file.isdir               # import specific function
-import core/string.to_lower
+import core/file                     # import entire module
+import core/string.to_lower          # import specific function
 import core/string.to_upper as upper # import specific function and define an alias
 
 if [ ! $(isdir "$1") ]; then
-    echo $(to_lower "$1 YEASH!")
+    echo $(to_lower "$1 IS NOT A DIRECTORY")
 else
-    echo $(upper "$1 yeash!")
+    echo $(upper "$1 is a directory")
 fi
 
 ```
