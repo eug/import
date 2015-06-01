@@ -41,7 +41,7 @@ __err()
 # $1 name of the module/function to include
 # $2 the 'as' "keyword"
 # $3 function alias
-use()
+import()
 {
   local __arg__=(${1//./ })
   local __mdl__="${__arg__[0]}"

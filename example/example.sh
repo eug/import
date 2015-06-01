@@ -1,10 +1,10 @@
 #!/bin/bash
 
-source yeash
+source ../import.sh
 
-use core/file.isdir
-use core/string.to_lower
-use core/string.to_upper as upper
+import core/file.isdir
+import core/string.to_lower
+import core/string.to_upper as upper
 
 if [ ! $(isdir "$1") ]; then
     echo $(to_lower "$1 YEASH!")
