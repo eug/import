@@ -1,8 +1,8 @@
-# importish
+# import.sh
 A import system for shell script.
 
 ## About
-This project implements an import system for shell script, allowing to import specific functions and/or set alias for it. The current version only supports BASH, but can easily extended for any alternative. Also, some guidelines must be followed to avoid possible conflicts during the usage.
+This project implements an import system for shell script, allowing to import specific functions and/or set alias for it. The current version only supports BASH, but can be easily extended for any alternative. Also, some guidelines must be followed to avoid possible conflicts during the usage.
 
 ## Basic usage
 - Use the command ```./spec <module.sh>``` to list which functions are available.
