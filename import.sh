@@ -1,39 +1,28 @@
 #!/bin/bash
 
-
-# This script is just a proof of concept that enables to load particular
-# functions and modules in a clean fashion way. This script has a restriction
-# that all public functions must depend only by private functions or
-# commands that can be found at the PATH or some other environment variable.
-
-
 # Loads all private functions of a given module
 # $1 module name
-__load_private_functions()
+_load_private_functions()
 {
-  sed -n "/^__[A-Za-z0-9_]+()/,/^}/p" "${1}.sh" 
+  sed -n "/^_[A-Za-z0-9_]+()/,/^}/p" "${1}.sh" 
 }
 
 
 # Loads a public function of a particular module
 # $1 module name
 # $2 function name
-__load_public_functions()
+_load_public_functions()
 {
-  sed -n "/^${2}()$/,/^}/p" "${1}.sh"
+  local pattern0="\(function $2\ *{\?$\)"
+  local pattern1="\(^$2()\ *{\?$\)"
+
+  sed -n "/\($pattern0\|$pattern1\)/,/^}/p" "${1}.sh"
 }
 
 
-__isloaded()
+_isloaded()
 {
   echo "declare -F $1 > /dev/null; echo $?"
-}
-
-
-__err()
-{
-  echo "$@" 1>&2;
-  exit;
 }
 
 
@@ -43,32 +32,32 @@ __err()
 # $3 function alias
 import()
 {
-  local __arg__=(${1//./ })
-  local __mdl__="${__arg__[0]}"
-  local __fnc__="${__arg__[1]}"
-  local __als__="$3"
+  local arg=(${1//./ })
+  local module="${arg[0]}"
+  local func="${arg[1]}"
+  local alias="$3"
 
+  # check if a function is specified 
+  if [ -n "${func}" ]; then
 
-  # have specified a function name?
-  if [ -n "$__fnc__" ]; then
+    local pvt_func="$(_load_private_functions ${module})"
+    local pbl_func="$(_load_public_functions  ${module} ${func})"
 
-    local pvt_func="$(__load_private_functions $__mdl__)"
-    local tgt_func="$(__load_public_functions  $__mdl__ $__fnc__)"
-
-    # have define an alias?
-    if [ "$2" = "as" -a -n "$__als__" ]; then
-      tgt_func="${tgt_func//$__fnc__/$__als__}"
+    # check if a alias was specified
+    if [ "$2" = "as" -a -n "${alias}" ]; then
+      pbl_func="${pbl_func//$func/$alias}"
     fi
 
     eval "$pvt_func"
-    eval "$tgt_func"
+    eval "$pbl_func"
 
-    if [ "$(__isloaded $__fnc__)" = "$(__isloaded $__als__)" ]; then
-      __err "unable to load function: $__fnc__"
+    if [ "$(_isloaded $func)" = "$(_isloaded $alias)" ]; then
+      echo "unable to load function: $func" 1>&2
+      exit
     fi
     
   else
     # loads the entire module
-    source "${__mdl__}.sh"
+    source "${module}.sh"
   fi
 }
