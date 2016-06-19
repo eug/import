@@ -4,7 +4,10 @@
 # $1 module name
 _load_private_functions()
 {
-  sed -n "/^_[A-Za-z0-9_]+()/,/^}/p" "${1}.sh" 
+  local pattern0="\(^function _[A-Za-z0-9_]+\ *{\?$\)"
+  local pattern1="\(^_[A-Za-z0-9_]+()\ *{\?$\)"
+  
+  sed -n "/\($pattern0\|$pattern1\)/,/^}/p" "${1}.sh"
 }
 
 
@@ -13,7 +16,7 @@ _load_private_functions()
 # $2 function name
 _load_public_functions()
 {
-  local pattern0="\(function $2\ *{\?$\)"
+  local pattern0="\(^function $2\ *{\?$\)"
   local pattern1="\(^$2()\ *{\?$\)"
 
   sed -n "/\($pattern0\|$pattern1\)/,/^}/p" "${1}.sh"
@@ -40,16 +43,16 @@ import()
   # check if a function is specified 
   if [ -n "${func}" ]; then
 
-    local pvt_func="$(_load_private_functions ${module})"
-    local pbl_func="$(_load_public_functions  ${module} ${func})"
+    local private_fn="$(_load_private_functions ${module})"
+    local public_fn="$(_load_public_functions ${module} ${func})"
 
     # check if an alias was specified
     if [ "$2" = "as" -a -n "${alias}" ]; then
-      pbl_func="${pbl_func//$func/$alias}"
+      public_fn="${public_fn//$func/$alias}"
     fi
 
-    eval "$pvt_func"
-    eval "$pbl_func"
+    eval "$private_fn"
+    eval "$public_fn"
 
     if [ "$(_isloaded $func)" = "$(_isloaded $alias)" ]; then
       echo "unable to load function: $func" 1>&2
