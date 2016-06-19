@@ -43,7 +43,7 @@ import()
     local pvt_func="$(_load_private_functions ${module})"
     local pbl_func="$(_load_public_functions  ${module} ${func})"
 
-    # check if a alias was specified
+    # check if an alias was specified
     if [ "$2" = "as" -a -n "${alias}" ]; then
       pbl_func="${pbl_func//$func/$alias}"
     fi
