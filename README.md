@@ -1,5 +1,5 @@
 # import.sh
-A import system for shell script.
+An import system for shell script.
 
 ## About
 This project implements an import system for shell script, allowing to import specific functions and set alias for it. The current version only supports BASH, but it can be easily extended for any alternative. Also, some guidelines must be followed to avoid possible conflicts during the usage.
